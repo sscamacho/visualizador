@@ -514,6 +514,66 @@ function createMap(conf) {
   }
 }
 
+/**Generaates a GetFreature information event
+*/
+function enableGetFeature()
+{
+
+	map.events.register('click', map, function (e) {
+                    document.getElementById('responseData').innerHTML = "Loading... please wait...";
+		var format = 'image/png';
+                    var params = {
+                        REQUEST: "GetFeatureInfo",
+                        EXCEPTIONS: "application/vnd.ogc.se_xml",
+                        BBOX: map.getExtent().toBBOX(),
+                        SERVICE: "WMS",
+                        INFO_FORMAT: 'text/html',
+                        QUERY_LAYERS: 'departamentos',
+                        FEATURE_COUNT: 50,
+                        Layers: 'departamentos',
+                        WIDTH: map.size.w,
+                        HEIGHT: map.size.h,
+                        format: 'image/png',
+                        styles: map.layers[0].params.STYLES,
+                        srs: map.layers[0].params.SRS};
+                    // handle the wms 1.3 vs wms 1.1 madness
+                    if(map.layers[0].params.VERSION == "1.3.0") {
+                        params.version = "1.3.0";
+                        params.j = e.xy.x;
+                        params.i = e.xy.y;
+                    } else {
+                        params.version = "1.1.1";
+                        params.x = e.xy.x;
+                        params.y = e.xy.y;
+                    }
+                        
+                    // merge filters
+                    if(map.layers[0].params.CQL_FILTER != null) {
+                        params.cql_filter = map.layers[0].params.CQL_FILTER;
+                    } 
+                    if(map.layers[0].params.FILTER != null) {
+                        params.filter = map.layers[0].params.FILTER;
+                    }
+                    if(map.layers[0].params.FEATUREID) {
+                        params.featureid = map.layers[0].params.FEATUREID;
+                    }
+                    OpenLayers.loadURL("http://mapas.vicepresidencia.gob.bo/geoserver/AtlasElectoral/wms", params, this, setHTML, setHTML);
+                    OpenLayers.Event.stop(e);
+                });
+            
+
+
+
+}
+
+// sets the HTML provided into the responseData element
+            function setHTML(response){
+//alert(e.xy.y);
+                document.getElementById('responseData').innerHTML = response.responseText;
+
+            };
+            
+
 /**
  * Principal function launched on "onLoad" event
  */
@@ -524,6 +584,9 @@ init = function () {
   conf.getUrlParameters();
   createLayout(conf);
   createMap(conf);
+ //loadControls(conf);
+//alert('aqui');
+enableGetFeature();
 };
 
 window.onload = init;
