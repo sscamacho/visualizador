@@ -520,6 +520,7 @@ function enableGetFeature()
 {
 
 	map.events.register('click', map, function (e) {
+		 mouseLoc = map.getLonLatFromPixel(e.xy);
                     document.getElementById('responseData').innerHTML = "Loading... please wait...";
 		var format = 'image/png';
                     var params = {
@@ -527,7 +528,7 @@ function enableGetFeature()
                         EXCEPTIONS: "application/vnd.ogc.se_xml",
                         BBOX: map.getExtent().toBBOX(),
                         SERVICE: "WMS",
-                        INFO_FORMAT: 'text/html',
+                        INFO_FORMAT: 'text/plain',
                         QUERY_LAYERS: 'departamentos',
                         FEATURE_COUNT: 50,
                         Layers: 'departamentos',
@@ -571,8 +572,7 @@ function enableGetFeature()
 //alert(e.xy.y);
                 document.getElementById('responseData').innerHTML = response.responseText;
 
-            };
-            
+}            
 
 /**
  * Principal function launched on "onLoad" event

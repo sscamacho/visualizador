@@ -192,7 +192,7 @@ ul#metadata-ul li span.attribution img {
 #icons .infoNextItemActive {
     background-image: url("theme/fatcow/img/information_on.png");
 }
-#ajaxloader {
+#ajaxloader,#responseData  {
     position: absolute;
     left: 50%;
     top: 50%;
