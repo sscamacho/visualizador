@@ -514,15 +514,15 @@ function createMap(conf) {
   }
 }
 
-/**Generaates a GetFreature information event
+/**Generaates a GetFreature information onclick event
 */
 function enableGetFeature()
 {
 
 	map.events.register('click', map, function (e) {
-		 mouseLoc = map.getLonLatFromPixel(e.xy);
+ 					mouseLoc = map.getLonLatFromPixel(e.xy);
                     document.getElementById('responseData').innerHTML = "Loading... please wait...";
-		var format = 'image/png';
+					var format = 'image/png';
                     var params = {
                         REQUEST: "GetFeatureInfo",
                         EXCEPTIONS: "application/vnd.ogc.se_xml",
@@ -558,7 +558,8 @@ function enableGetFeature()
                     if(map.layers[0].params.FEATUREID) {
                         params.featureid = map.layers[0].params.FEATUREID;
                     }
-                    OpenLayers.loadURL("http://mapas.vicepresidencia.gob.bo/geoserver/AtlasElectoral/wms", params, this, setHTML, setHTML);
+                    OpenLayers.loadURL("http://mapas.vicepresidencia.gob.bo/geoserver/AtlasElectoral/wms", params, this, setHTML, 
+setHTML);
                     OpenLayers.Event.stop(e);
                 });
             
@@ -566,13 +567,51 @@ function enableGetFeature()
 
 
 }
-
-// sets the HTML provided into the responseData element
+// Global vars for popup use
+var popup;
+var mouseLoc;
+// parse the response provided into the popup
             function setHTML(response){
-//alert(e.xy.y);
-                document.getElementById('responseData').innerHTML = response.responseText;
+ 			var lines = response.responseText.split('\n');
+//definicion de la variables departamentos 
+			var Vdepartamento;
+			for (var lcv = 0; lcv < (lines.length); lcv++) {
+		            var vals = lines[lcv].replace(/^\s*/,'').replace(/\s*$/,'').replace(/ = /,"=").replace(/'/g,'').split('=');
+            		if (vals[1] == "") {
+                		vals[1] = "No se tiene el dato";
+                    }
 
-}            
+            		if (vals[0].indexOf('nombre') != -1 ) {
+                		Vdepartamento = vals[1];
+            		} 
+            }
+        
+                 var msg;
+				if (Vdepartamento.replace(/^\s+/g,'').replace(/\s+$/g,'') == "undefined")
+				{
+					msg="No es un departamento";
+				}
+                else
+				{
+					msg="Departamento: " + Vdepartamento;
+				}
+				var popup_info = "<h3>" + msg + "</h3>";
+  				if (popup != null) {
+            		popup.destroy();
+            		popup = null;
+		        }
+        		popup = new OpenLayers.Popup.AnchoredBubble("Departamento Seleccionado",
+                                        mouseLoc,
+                                        new OpenLayers.Size(250,40),
+                                        popup_info,
+                                        null,
+                                        true);
+        popup.setBackgroundColor("yellow");
+        map.addPopup(popup);
+                document.getElementById('responseData').innerHTML = popup_info;   
+
+            };
+            
 
 /**
  * Principal function launched on "onLoad" event
@@ -584,9 +623,8 @@ init = function () {
   conf.getUrlParameters();
   createLayout(conf);
   createMap(conf);
- //loadControls(conf);
-//alert('aqui');
-enableGetFeature();
+//method added by Norman Huasebe
+  enableGetFeature();
 };
 
 window.onload = init;

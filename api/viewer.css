@@ -192,15 +192,15 @@ ul#metadata-ul li span.attribution img {
 #icons .infoNextItemActive {
     background-image: url("theme/fatcow/img/information_on.png");
 }
-#ajaxloader,#responseData  {
+#ajaxloader {
     position: absolute;
     left: 50%;
     top: 50%;
     display: block;
     height: 24px;
     width: 300px;
-    margin-left: -150px; /* -1 * div width / 2 */
-    margin-top: -12px;  /* -1 * div height / 2 */
+    margin-left: -150px;
+    margin-top: -12px;  
     text-align: center;
 }
 #ajaxloader img {
