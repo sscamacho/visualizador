@@ -509,14 +509,11 @@ function createMap(conf) {
   var request;
   request = loadWmc(conf);
   if (request.status < 200 || request.status >= 300 || !request.responseText) {
-    // probamos en HTTP por si acaso
     request = loadWmc(conf, 'http:');
   }
 }
 
-/**Generaates a GetFreature information onclick event
-*/
-function enableGetFeature()
+function MostrarInformacion()
 {
 
 	map.events.register('click', map, function (e) {
@@ -567,10 +564,8 @@ setHTML);
 
 
 }
-// Global vars for popup use
 var popup;
 var mouseLoc;
-// parse the response provided into the popup
             function setHTML(response){
  			var lines = response.responseText.split('\n');
 //definicion de la variables departamentos 
@@ -613,9 +608,6 @@ var mouseLoc;
             };
             
 
-/**
- * Principal function launched on "onLoad" event
- */
 init = function () {
   var conf;
   conf = new Configuration();
@@ -623,10 +615,10 @@ init = function () {
   conf.getUrlParameters();
   createLayout(conf);
   createMap(conf);
-//method added by Norman Huasebe
-  enableGetFeature();
+//methodo Para llamar a la funcion clic
+//
+  MostrarInformacion();
 };
 
 window.onload = init;
 
-/*}());*/
